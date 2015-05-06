@@ -21,7 +21,7 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.rowHeight = UITableViewAutomaticDimension
         refreshControl.addTarget(self, action: "onRefresh", forControlEvents: UIControlEvents.ValueChanged)
         tableView.insertSubview(refreshControl, atIndex: 0)
-        
+       
         var nav = self.navigationController?.navigationBar
         nav?.tintColor = UIColor.whiteColor()
         nav?.barTintColor = UIColor(red: 85/255.0, green: 172/255.0, blue: 238/255.0, alpha: 1.0)
@@ -133,13 +133,21 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     var tempCell = sender as! TweetCell
                     vc.tweet = tempCell.tweet
                 }
+                else if(segue.identifier == "profileSegue"){
+                    println("i think im going to a user's profile")
+                    var vc = segue.destinationViewController as! ProfileViewController
+                    
+                    var tempCell1 = sender as! UIButton
+                    var tempCell = tempCell1.superview?.superview as! TweetCell
+                    vc.isMyOwnProfile = false
+                    vc.tweet = tempCell.tweet
             }
             
         }
         
     }
     
-
+    }
 
 
 }

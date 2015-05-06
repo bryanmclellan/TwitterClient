@@ -36,6 +36,55 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
         
         }
     
+    func getMentionsTimeLine (params: NSDictionary?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
+        GET("1.1/statuses/mentions_timeline.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
+            completion(tweets: tweets, error: nil)
+            //println("\(response)")
+            }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                println("couldnt get the mentions timeline")
+                completion(tweets: nil, error: error)
+                
+        })
+        
+    }
+    
+    func getUserTweets (params: NSDictionary?, completion: (tweets: [Tweet]?, error: NSError?) -> ()) {
+        GET("1.1/statuses/user_timeline.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var tweets = Tweet.tweetsWithArray(response as! [NSDictionary])
+            completion(tweets: tweets, error: nil)
+            //println("\(response)")
+            }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                println("couldnt get the timeline")
+                completion(tweets: nil, error: error)
+                
+        })
+        
+    }
+    
+    func getUserBannerPhoto (params: NSDictionary?, completion: (url: String?, error: NSError?) -> ()) {
+        GET("1.1/users/profile_banner.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+            var temp = response as! NSDictionary
+            println(response)
+            
+            var url = temp.valueForKey("sizes") as! NSDictionary
+            url = url.valueForKey("mobile_retina") as! NSDictionary
+            var RealUrl = url["url"] as! String
+            var url1 = "hello test"
+            println("im printing the url")
+
+            println("\(RealUrl)")
+            println("i printed the url")
+            
+            completion(url: RealUrl, error: nil)
+            }, failure: { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                println("couldnt get the banner photo")
+                completion(url: nil, error: error)
+                
+        })
+        
+    }
+    
 //    func createTweet (params: NSDictionary?, completion: (tweet: Tweet?, error: NSError?) -> ()) {
 //        POST("1.1/statuses/update.json", parameters: params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
 //            var tweet = Tweet(dictionary: response as! NSDictionary)
@@ -69,6 +118,8 @@ class TwitterClient: BDBOAuth1RequestOperationManager {
                 completion(id: nil, error: error)
         }
     }
+
+    
     
     func retweet (id: Int?, completion: (id: Int?, error: NSError?) -> ()) {
         self.POST("1.1/statuses/retweet/\(id!).json", parameters: nil, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
